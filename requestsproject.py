@@ -27,7 +27,8 @@ def find_xml(url):
     soup_2 = BeautifulSoup(filing_page.content, "html5lib")
     report_links = soup_2.find_all('a')
     for link in report_links:
-      print(link)
+        if link.text[-4:] == ('.txt'):
+            print(link)
 
 
 
