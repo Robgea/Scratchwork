@@ -105,14 +105,15 @@ def parse_xml(txt_link):
 
 def initiator():
     
-
+    #empty list to put CIKs into
     starting_list = []
     
-
+    #greeting message
     print("Hello! This is Rob Glass's CIK lookup. \n\n  ")
     
     new_CIK = ''
 
+    # while loop to take inputs
     while new_CIK != 'Start' :
         new_CIK = input('Please add a CIK, if you are finished adding CIKs input "Start": ')
         if new_CIK == 'Start':
@@ -124,6 +125,8 @@ def initiator():
         else:
             starting_list.append(new_CIK)
 
+
+    #for loop that runs the program for every CIK
     for CIK in starting_list:
         find_page(CIK)
 
