@@ -12,6 +12,7 @@ def find_page(target):
     soup = BeautifulSoup(search_return.content, "html5lib")
     results = soup.find_all('filing')
     
+    # if no filings then we skip the page and print the error.
     if len(results) == 0:
         print('No luck finding a 13F report for ' + target +'.  Continuing on to next CIK.')
 
@@ -22,7 +23,7 @@ def find_page(target):
         result_link = result.find('filinghref')
         page_link = result_link.text
 
-        #return the link
+        #pass the link onto the next step
         find_xml(page_link)
 
 
@@ -34,7 +35,7 @@ def find_xml(url):
     # parse the page
     soup_2 = BeautifulSoup(filing_page.content, "html5lib")
     
-    # find the text report
+    # find the text report, and pass it on to the parser
     report_links = soup_2.find_all('a')
     for link in report_links:
         if link.text[-4:] == ('.txt'):
@@ -100,11 +101,14 @@ def parse_xml(txt_link):
   
 
 
-# function to start the process and generate a list of CIKs. 
+# function to start the process and generate a list of CIKs to lookup. 
 
 def initiator():
+    
+
     starting_list = []
-    x = False
+    
+
     print("Hello! This is Rob Glass's CIK lookup. \n\n  ")
     
     new_CIK = ''
