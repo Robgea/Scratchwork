@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
-#from lxml import etree
+import csv
 
 # target CIK
 target = '0001166559'
@@ -38,23 +38,53 @@ def find_xml(url):
 
 def parse_xml(txt_link):
     #the XML
+    
     report_page = requests.get('https://www.sec.gov/' + txt_link)
     
     #parse the page
+    
     soup_3 = BeautifulSoup(report_page.content, "xml")
 
     #get the organization name
+    
     org_name = soup_3.find('name')
     print(org_name.text)
 
     #get the date the filing is reporting through.
+    
     report_period = soup_3.find('periodOfReport')
-    print(periodOfReport)
-
+    print(report_period.text)
 
     #parse the info tables
-    info = soup_3.find_all('infoTable')
     
+    info = soup_3.find_all('infoTable')
+
+    #create the TSV, name it after the organization and the period of the report.
+
+    csvFile = open(org_name.text + '_' + report_period.text +'.tsv', 'w', newline='')
+    csvWriter = csv.writer(csvFile, delimiter='\t', lineterminator='\n\n')
+    
+    #set up the table
+
+    csvWriter.writerow([org_name.text])
+    csvWriter.writerow([report_period.text])
+    csvWriter.writerow(' ')
+    csvWriter.writerow(['Name of Issuer', 'Sole Stock', 'Shared Stock', 'No Vote Stock', 'Total Value'])
+
+    for stock in info:
+        issuer = stock.find('nameOfIssuer')
+        value = stock.find('value')
+        sole_shares = stock.find('Sole')
+        shared_shares = stock.find('Shared')
+        novote_shares = stock.find('None')
+        csvWriter.writerow([issuer.text, sole_shares.text, shared_shares.text, novote_shares.text, value.text])
+
+    
+    csvFile.close()    
+
+
+
+
 
 
 
