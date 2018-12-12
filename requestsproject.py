@@ -37,13 +37,28 @@ def find_xml(url):
             return(link.get('href'))
 
 def parse_xml(txt_link):
+    #the XML
     report_page = requests.get('https://www.sec.gov/' + txt_link)
     
-    soup_3 = BeautifulSoup(report_page.content, "html5lib")
+    #parse the page
+    soup_3 = BeautifulSoup(report_page.content, "xml")
 
-    tables = soup_3.find_all('infoTable')
-    for table in tables:
-      print(table.text)
+    #get the organization name
+    org_name = soup_3.find('name')
+    print(org_name.text)
+
+    #get the date the filing is reporting through.
+    report_period = soup_3.find('periodOfReport')
+    print(periodOfReport)
+
+
+    #parse the info tables
+    info = soup_3.find_all('infoTable')
+    
+
+
+
+
 
 
 parse_xml(find_xml(find_page(target)))
