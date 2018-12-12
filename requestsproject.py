@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+#from lxml import etree
 
 # target CIK
 target = '0001166559'
@@ -23,13 +24,26 @@ def find_page(target):
     return page_link
 
 def find_xml(url):
+    # go to the filings page
     filing_page = requests.get(url)
+
+    # parse the page
     soup_2 = BeautifulSoup(filing_page.content, "html5lib")
+    
+    # find the text report
     report_links = soup_2.find_all('a')
     for link in report_links:
         if link.text[-4:] == ('.txt'):
-            print(link)
+            return(link.get('href'))
+
+def parse_xml(txt_link):
+    report_page = requests.get('https://www.sec.gov/' + txt_link)
+    
+    soup_3 = BeautifulSoup(report_page.content, "html5lib")
+
+    tables = soup_3.find_all('infoTable')
+    for table in tables:
+      print(table.text)
 
 
-
-find_xml(find_page(target))
+parse_xml(find_xml(find_page(target)))
